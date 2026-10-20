@@ -18,6 +18,8 @@ jobs:
       # Récupère le code du dépôt GitHub
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       # Installe Java 21 et Maven
       - name: Set up JDK 21
