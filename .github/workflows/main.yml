@@ -47,7 +47,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./simple-api
-          push: false
+          # Publie uniquement depuis la branche main
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-simple-api:latest
 
       # Construit l'image PostgreSQL
@@ -55,7 +56,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./database
-          push: false
+          # Publie uniquement depuis la branche main
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-database:latest
 
       # Construit l'image du serveur HTTP
@@ -63,5 +65,13 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./http-server
-          push: false
+          # Publie uniquement depuis la branche main
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-httpd:latest
+    
+      # Authentification sécurisée à Docker Hub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
