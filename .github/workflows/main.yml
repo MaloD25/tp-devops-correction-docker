@@ -31,7 +31,22 @@ jobs:
       # Compile le backend et exécute les tests
       - name: Build and test with Maven
         run: mvn -B clean verify --file ./simple-api/pom.xml
-  
+
+      
+      
+      # Analyse la qualité du code avec SonarQube Cloud
+      - name: SonarQube Cloud Analysis
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: >
+          mvn -B verify sonar:sonar
+          -Dsonar.projectKey=MaloD25_tp-devops-correction-docker
+          -Dsonar.organization=MaloD25
+          -Dsonar.host.url=https://sonarcloud.io
+          --file ./simple-api/pom.xml
+
+
+
   # Construit les images Docker après la réussite des tests
   
   build-and-push-docker-image:
