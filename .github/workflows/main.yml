@@ -33,6 +33,7 @@ jobs:
         run: mvn -B clean verify --file ./simple-api/pom.xml
   
   # Construit les images Docker après la réussite des tests
+  
   build-and-push-docker-image:
     needs: test-backend
     runs-on: ubuntu-24.04
@@ -42,36 +43,34 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Construit l'image du backend Java
-      - name: Build image backend
-        uses: docker/build-push-action@v6
-        with:
-          context: ./simple-api
-          # Publie uniquement depuis la branche main
-          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-simple-api:latest
-
-      # Construit l'image PostgreSQL
-      - name: Build image database
-        uses: docker/build-push-action@v6
-        with:
-          context: ./database
-          # Publie uniquement depuis la branche main
-          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-database:latest
-
-      # Construit l'image du serveur HTTP
-      - name: Build image httpd
-        uses: docker/build-push-action@v6
-        with:
-          context: ./http-server
-          # Publie uniquement depuis la branche main
-          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-httpd:latest
-    
-      # Authentification sécurisée à Docker Hub
+      # Authentification à Docker Hub AVANT la publication
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Construction et publication du backend
+      - name: Build image backend
+        uses: docker/build-push-action@v6
+        with:
+          context: ./simple-api
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-simple-api:latest
+
+      # Construction et publication de la base de données
+      - name: Build image database
+        uses: docker/build-push-action@v6
+        with:
+          context: ./database
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-database:latest
+
+      # Construction et publication du serveur HTTP
+      - name: Build image httpd
+        uses: docker/build-push-action@v6
+        with:
+          context: ./http-server
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-httpd:latest
+
