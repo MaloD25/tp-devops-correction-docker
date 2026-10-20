@@ -31,3 +31,37 @@ jobs:
       # Compile le backend et exécute les tests
       - name: Build and test with Maven
         run: mvn -B clean verify --file ./simple-api/pom.xml
+  
+  # Construit les images Docker après la réussite des tests
+  build-and-push-docker-image:
+    needs: test-backend
+    runs-on: ubuntu-24.04
+
+    steps:
+      # Récupère le code du dépôt
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Construit l'image du backend Java
+      - name: Build image backend
+        uses: docker/build-push-action@v6
+        with:
+          context: ./simple-api
+          push: false
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-simple-api:latest
+
+      # Construit l'image PostgreSQL
+      - name: Build image database
+        uses: docker/build-push-action@v6
+        with:
+          context: ./database
+          push: false
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-database:latest
+
+      # Construit l'image du serveur HTTP
+      - name: Build image httpd
+        uses: docker/build-push-action@v6
+        with:
+          context: ./http-server
+          push: false
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-httpd:latest
