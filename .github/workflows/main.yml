@@ -43,7 +43,7 @@ jobs:
           mvn -B
           org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
           -Dsonar.projectKey=MaloD25_tp-devops-correction-docker
-          -Dsonar.organization=MaloD25
+          -Dsonar.organization=malod25
           -Dsonar.host.url=https://sonarcloud.io
           --file ./simple-api/pom.xml
 
