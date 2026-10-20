@@ -34,16 +34,19 @@ jobs:
 
       
       
+      
       # Analyse la qualité du code avec SonarQube Cloud
       - name: SonarQube Cloud Analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: >
-          mvn -B verify sonar:sonar
+          mvn -B
+          org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
           -Dsonar.projectKey=MaloD25_tp-devops-correction-docker
           -Dsonar.organization=MaloD25
           -Dsonar.host.url=https://sonarcloud.io
           --file ./simple-api/pom.xml
+
 
 
 
