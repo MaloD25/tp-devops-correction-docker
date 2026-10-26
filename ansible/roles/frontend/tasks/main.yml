@@ -1,0 +1,13 @@
+---
+- name: Deploy Vue.js frontend container
+  community.docker.docker_container:
+    name: frontend
+    image: maloduf/tp-devops-frontend:latest
+    pull: always
+    state: started
+    restart_policy: unless-stopped
+    networks:
+      - name: frontend-network
+    networks_cli_compatible: true
+    comparisons:
+      networks: strict

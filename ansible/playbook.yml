@@ -2,6 +2,7 @@
 - hosts: all
   gather_facts: true
   become: true
+
   roles:
     - docker
 
@@ -25,6 +26,12 @@
       vars:
         ansible_python_interpreter: /opt/docker_venv/bin/python
         db_password: "{{ lookup('env', 'DB_PASSWORD') }}"
+
+    - name: Deploy Vue.js frontend
+      ansible.builtin.include_role:
+        name: frontend
+      vars:
+        ansible_python_interpreter: /opt/docker_venv/bin/python
 
     - name: Deploy Apache HTTPD
       ansible.builtin.include_role:

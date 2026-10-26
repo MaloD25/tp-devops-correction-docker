@@ -1,4 +1,4 @@
-name: CI devops 2026
+﻿name: CI devops 2026
 
 on:
   push:
@@ -83,6 +83,13 @@ jobs:
           context: ./http-server
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
           tags: maloduf/tp-devops-httpd:latest
+
+      - name: Build image frontend
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          tags: maloduf/tp-devops-frontend:latest
 
   # ==========================================
   # 3. DEPLOIEMENT AUTOMATIQUE AVEC ANSIBLE
