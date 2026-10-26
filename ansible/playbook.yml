@@ -1,0 +1,33 @@
+---
+- hosts: all
+  gather_facts: true
+  become: true
+  roles:
+    - docker
+
+  tasks:
+    - name: Create Docker networks
+      ansible.builtin.include_role:
+        name: network
+      vars:
+        ansible_python_interpreter: /opt/docker_venv/bin/python
+
+    - name: Deploy PostgreSQL
+      ansible.builtin.include_role:
+        name: database
+      vars:
+        ansible_python_interpreter: /opt/docker_venv/bin/python
+        db_password: "{{ lookup('env', 'DB_PASSWORD') }}"
+
+    - name: Deploy Spring Boot backend
+      ansible.builtin.include_role:
+        name: app
+      vars:
+        ansible_python_interpreter: /opt/docker_venv/bin/python
+        db_password: "{{ lookup('env', 'DB_PASSWORD') }}"
+
+    - name: Deploy Apache HTTPD
+      ansible.builtin.include_role:
+        name: proxy
+      vars:
+        ansible_python_interpreter: /opt/docker_venv/bin/python

@@ -1,0 +1,11 @@
+---
+- name: Create frontend network
+  community.docker.docker_network:
+    name: frontend-network
+    driver: bridge
+
+- name: Create database network
+  community.docker.docker_network:
+    name: database-network
+    driver: bridge
+    internal: true

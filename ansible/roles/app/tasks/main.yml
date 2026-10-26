@@ -1,0 +1,19 @@
+---
+- name: Create Spring Boot backend container
+  community.docker.docker_container:
+    name: backend
+    image: maloduf/tp-devops-simple-api:latest
+    pull: always
+    state: started
+    restart_policy: unless-stopped
+    env:
+      DATABASE_HOST: database
+      DATABASE_PASSWORD: "{{ db_password }}"
+    networks:
+      - name: frontend-network
+        aliases:
+          - simple-api
+      - name: database-network
+    networks_cli_compatible: true
+    comparisons:
+      networks: strict

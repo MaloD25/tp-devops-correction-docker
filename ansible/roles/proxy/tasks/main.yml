@@ -1,0 +1,15 @@
+---
+- name: Create Apache HTTPD container
+  community.docker.docker_container:
+    name: httpd
+    image: maloduf/tp-devops-httpd:latest
+    pull: always
+    state: started
+    restart_policy: unless-stopped
+    published_ports:
+      - "80:80"
+    networks:
+      - name: frontend-network
+    networks_cli_compatible: true
+    comparisons:
+      networks: strict

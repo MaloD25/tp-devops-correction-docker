@@ -1,0 +1,23 @@
+---
+- name: Create PostgreSQL container
+  community.docker.docker_container:
+    name: database
+    image: maloduf/tp-devops-database:latest
+    pull: always
+    state: started
+    restart_policy: unless-stopped
+
+    env:
+      POSTGRES_DB: db
+      POSTGRES_USER: usr
+      POSTGRES_PASSWORD: "{{ db_password }}"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    networks:
+      - name: database-network
+
+    networks_cli_compatible: true
+    comparisons:
+      networks: strict
